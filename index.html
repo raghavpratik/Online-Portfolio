@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pratik I Patel - Backend Developer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #1a1a1a;
+            --primary-color: #ff0000;
+            --glow-color: rgba(255, 0, 0, 0.5);
+            --shadow-color: rgba(255, 0, 0, 0.2);
+            --card-bg: rgba(240, 240, 240, 0.8);
+            --border-color: rgba(0, 0, 0, 0.1);
+        }
+        body.hacker-mode {
+            --bg-color: #000000;
+            --text-color: #e0e0e0;
+            --primary-color: #00ff00;
+            --glow-color: rgba(0, 255, 0, 0.5);
+            --shadow-color: rgba(0, 255, 0, 0.2);
+            --card-bg: rgba(10, 20, 15, 0.7);
+            --border-color: color-mix(in srgb, var(--primary-color) 20%, transparent);
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Share Tech Mono', monospace;
+            overflow-x: hidden;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+        #bg-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        body.hacker-mode #bg-canvas { opacity: 0.3; }
+
+        .section-container {
+            position: relative;
+            background-color: var(--bg-color);
+            backdrop-filter: blur(5px);
+            transition: background-color 0.5s ease;
+        }
+        body.hacker-mode .section-container { background-color: rgba(0, 0, 0, 0.7); }
+        
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            transition: all 0.4s ease;
+        }
+        .card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px var(--shadow-color);
+        }
+        .hacker-text { display: inline-block; }
+
+        /* Redesigned Education Timeline */
+        .education-timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .education-timeline::after {
+            content: '';
+            position: absolute;
+            width: 3px;
+            background-color: var(--primary-color);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -1.5px;
+            box-shadow: 0 0 10px var(--glow-color);
+        }
+        .edu-entry {
+            padding: 10px 40px;
+            position: relative;
+            width: 50%;
+        }
+        .edu-entry::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -12.5px;
+            background-color: var(--bg-color);
+            border: 4px solid var(--primary-color);
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+            box-shadow: 0 0 15px var(--glow-color);
+        }
+        .edu-left { left: 0; }
+        .edu-right { left: 50%; }
+        .edu-right::after { left: -12.5px; }
+        .edu-content { padding: 20px 30px; background-color: var(--card-bg); position: relative; border-radius: 6px; }
+
+        /* Redesigned Experience Dossier */
+        .dossier-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .dossier-tabs {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .dossier-tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            transition: all 0.3s ease;
+        }
+        .dossier-tab.active, .dossier-tab:hover {
+            background-color: var(--primary-color);
+            color: var(--bg-color);
+            transform: translateX(-5px);
+            box-shadow: 0 0 15px var(--glow-color);
+        }
+        .dossier-content {
+            width: 70%;
+            min-height: 250px;
+        }
+        .dossier-pane {
+            display: none;
+        }
+        .dossier-pane.active {
+            display: block;
+        }
+
+        /* Glitch Effect */
+        #glitch-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: var(--bg-color);
+            z-index: 9999; pointer-events: none; opacity: 0;
+        }
+        #glitch-overlay.active {
+            animation: glitch-anim 0.5s steps(2, end) forwards;
+        }
+        @keyframes glitch-anim {
+            0% { opacity: 1; background-image: url(https://i.gifer.com/origin/c7/c74135d7a3c56a19f868651c2436531a_w200.gif); }
+            100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body class="theme-light">
+    <div id="glitch-overlay"></div>
+    <canvas id="bg-canvas"></canvas>
+
+    <header class="fixed top-0 left-0 right-0 z-50 bg-[var(--bg-color)] bg-opacity-50 backdrop-blur-md border-b" style="border-color: var(--border-color);">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-[var(--text-color)] tracking-wider">PP_</a>
+            <nav class="hidden md:flex items-center space-x-4">
+                <a href="#summary" class="hover:text-[var(--primary-color)] transition-colors">[summary]</a>
+                <a href="#skills" class="hover:text-[var(--primary-color)] transition-colors">[skills]</a>
+                <a href="#experience" class="hover:text-[var(--primary-color)] transition-colors">[experience]</a>
+                <a href="#projects" class="hover:text-[var(--primary-color)] transition-colors">[projects]</a>
+                <button id="hacker-mode-toggle" class="ml-4 px-3 py-1 border-2 border-[var(--primary-color)] text-[var(--primary-color)] hover:bg-[var(--primary-color)] hover:text-[var(--bg-color)] transition-all duration-300">
+                    ACTIVATE HACKER MODE
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero" class="relative h-screen flex items-center justify-center text-center overflow-hidden">
+            <div class="relative z-10">
+                <h1 class="text-5xl md:text-7xl font-extrabold text-[var(--text-color)] mb-4">
+                    Pratik I Patel
+                </h1>
+                <p class="text-xl md:text-2xl text-[var(--primary-color)] font-mono">
+                    &lt;<span id="hacker-subtitle" class="hacker-text"></span> /&gt;
+                </p>
+            </div>
+        </section>
+
+        <section id="summary" class="py-20 section-container">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-6">My Story</h2>
+                <p class="text-lg text-gray-600 body.hacker-mode:text-gray-300 mb-8 leading-relaxed">
+                    Passionate Backend Developer skilled in PHP, Laravel, Tailwind CSS, JavaScript and REST APIs. Adept at problem solving, building clean UI, and crafting scalable backend logic. Advancing skills in Laravel development while expanding knowledge in building robust backend systems across modern frameworks.
+                </p>
+            </div>
+        </section>
+
+        <section id="skills" class="py-20 section-container">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Technical Skills</h2>
+                <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-8 max-w-6xl mx-auto" id="skills-grid">
+                    </div>
+            </div>
+        </section>
+
+        <section id="education" class="py-20 section-container">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Education_Log</h2>
+                <div class="education-timeline" id="education-timeline">
+                    </div>
+            </div>
+        </section>
+
+        <section id="experience" class="py-20 section-container">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Experience_Dossier</h2>
+                <div class="dossier-container">
+                    <div class="dossier-tabs" id="dossier-tabs">
+                        </div>
+                    <div class="dossier-content card" id="dossier-content">
+                        </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="py-20 section-container">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Projects_Showcase</h2>
+                <div class="grid md:grid-cols-2 gap-8" id="projects-grid">
+                    </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="py-8 border-t" style="border-color: var(--border-color);">
+        <div class="container mx-auto px-6 text-center text-gray-500">
+            <p>&copy; 2024 Pratik I Patel. Session terminated.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            const hackerModeToggle = document.getElementById('hacker-mode-toggle');
+            const glitchOverlay = document.getElementById('glitch-overlay');
+            const canvas = document.getElementById('bg-canvas');
+            const ctx = canvas.getContext('2d');
+            let rainInterval;
+
+            // --- Theme Engine ---
+            hackerModeToggle.addEventListener('click', () => {
+                glitchOverlay.classList.add('active');
+                
+                setTimeout(() => {
+                    const isHackerMode = body.classList.toggle('hacker-mode');
+                    hackerModeToggle.textContent = isHackerMode ? 'DEACTIVATE HACKER MODE' : 'ACTIVATE HACKER MODE';
+                    setupRain();
+                    hackerText("hacker-subtitle", "Passionate Backend Developer", true);
+                }, 250);
+
+                setTimeout(() => {
+                    glitchOverlay.classList.remove('active');
+                }, 500);
+            });
+
+            // --- Digital Rain Background ---
+            function setupRain() {
+                if (!body.classList.contains('hacker-mode')) {
+                    if (rainInterval) clearInterval(rainInterval);
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    return;
+                }
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                let letters = '01';
+                letters = letters.split('');
+                const fontSize = 12;
+                const columns = canvas.width / fontSize;
+                const drops = Array(Math.floor(columns)).fill(1);
+                
+                const primaryColor = getComputedStyle(body).getPropertyValue('--primary-color').trim();
+
+                function drawDigitalRain() {
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = primaryColor;
+                    // --- CORRECTION #2 WAS HERE ---
+                    ctx.font = `${fontSize}px Share Tech Mono`;
+
+                    for (let i = 0; i < drops.length; i++) {
+                        const text = letters[Math.floor(Math.random() * letters.length)];
+                        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                            drops[i] = 0;
+                        }
+                        drops[i]++;
+                    }
+                }
+                if (rainInterval) clearInterval(rainInterval);
+                rainInterval = setInterval(drawDigitalRain, 50);
+            }
+            window.addEventListener('resize', setupRain);
+
+            // --- Hacker Text Effect ---
+            const hackerText = (targetId, message, force = false) => {
+                const target = document.getElementById(targetId);
+                if (!target) return;
+                if (target.dataset.intervalId && !force) return;
+                if (target.dataset.intervalId) clearInterval(parseInt(target.dataset.intervalId));
+
+                const chars = '!<>-\\/[]{}—=+*^?#_';
+                let iteration = 0;
+                
+                const interval = setInterval(() => {
+                    target.innerText = message.split("")
+                        .map((letter, index) => (index < iteration) ? message[index] : chars[Math.floor(Math.random() * chars.length)])
+                        .join("");
+                    if (iteration >= message.length) {
+                        clearInterval(interval);
+                        target.removeAttribute('data-interval-id');
+                    }
+                    iteration += 1 / 3;
+                }, 30);
+                target.dataset.intervalId = interval.toString();
+            };
+            hackerText("hacker-subtitle", "Passionate Backend Developer");
+
+            // --- Dynamic Content Injection ---
+            const skills = [
+                { name: 'PHP', link: 'https://www.php.net/' },
+                { name: 'Laravel', link: 'https://laravel.com/' },
+                { name: 'Node.js', link: 'https://nodejs.org/' },
+                { name: 'JavaScript', link: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript' },
+                { name: 'MySQL', link: 'https://www.mysql.com/' },
+                { name: 'Git', link: 'https://git-scm.com/' },
+                { name: 'Tailwind CSS', link: 'https://tailwindcss.com/' },
+                { name: 'Postman', link: 'https://www.postman.com/' },
+            ];
+            const skillsContainer = document.getElementById('skills-grid');
+            skillsContainer.innerHTML = skills.map(skill => `
+                <a href="${skill.link}" target="_blank" rel="noopener noreferrer" class="text-center skill-icon transition-all duration-300 p-4 border border-transparent hover:border-[var(--primary-color)]">
+                    <p class="font-medium text-lg">${skill.name}</p>
+                </a>
+            `).join('');
+
+            const education = [
+                { degree: 'B.Tech in Information Technology', school: 'Swami Keshvanand Institute of Technology', duration: 'Nov 2022 - Jun 2026', link: 'https://www.skit.ac.in/' },
+                { degree: 'Senior Secondary (Class XII)', school: 'Aditya Birla Public School', duration: 'Jun 2020 - May 2022', link: 'https://www.adityabirlapublicschool-chittorgarh.com/' }
+            ];
+            const educationContainer = document.getElementById('education-timeline');
+            educationContainer.innerHTML = education.map((edu, index) => `
+                <div class="edu-entry ${index % 2 === 0 ? 'edu-left' : 'edu-right'}">
+                    <div class="edu-content card">
+                        <h3 class="font-bold text-[var(--primary-color)] text-xl">${edu.degree}</h3>
+                        <a href="${edu.link}" target="_blank" rel="noopener noreferrer" class="text-sm font-medium leading-snug tracking-wide hover:underline">${edu.school}</a>
+                        <p class="text-sm leading-snug tracking-wide text-gray-500 mt-2">${edu.duration}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            const experiences = [
+                { id: 'exp1', role: 'Software Development Intern', company: 'SAER Technology', duration: 'Jun 2025 - Present', description: 'Developing a comprehensive full-stack web application for pet adoption and clinic discovery. Built core modules including user authentication, role-based access, search filtering, and admin dashboard using Laravel and REST APIs.' },
+                { id: 'exp2', role: 'Web Developer Intern', company: 'Aditya Birla Group', duration: 'Jul 2024 - Aug 2024', description: 'Built internal web tools using PHP, JavaScript, and HTML/CSS. Improved UI responsiveness and backend validation, reducing loading time by 70%.' },
+                { id: 'exp3', role: 'Java Intern', company: 'SKIT (In-House Internship)', duration: 'Jul 2023', description: 'Completed 15-day training on core Java concepts and OOP. Created a Snake Game using Java Swing with score tracking and controls.' },
+            ];
+            const dossierTabs = document.getElementById('dossier-tabs');
+            const dossierContent = document.getElementById('dossier-content');
+            // --- CORRECTION #1 WAS HERE ---
+            dossierTabs.innerHTML = experiences.map((exp, index) => `<div class="dossier-tab ${index === 0 ? 'active' : ''}" data-tab="${exp.id}">${exp.company}</div>`).join('');
+            dossierContent.innerHTML = experiences.map((exp, index) => `
+                <div class="dossier-pane p-6 ${index === 0 ? 'active' : ''}" id="${exp.id}">
+                    <h3 class="text-xl font-bold text-[var(--primary-color)]">${exp.role}</h3>
+                    <p class="font-semibold mb-2">${exp.company} | ${exp.duration}</p>
+                    <p class="text-gray-400">${exp.description}</p>
+                </div>
+            `).join('');
+            
+            dossierTabs.addEventListener('click', (e) => {
+                if (e.target.classList.contains('dossier-tab')) {
+                    const targetId = e.target.dataset.tab;
+                    dossierTabs.querySelectorAll('.dossier-tab').forEach(tab => tab.classList.remove('active'));
+                    dossierContent.querySelectorAll('.dossier-pane').forEach(pane => pane.classList.remove('active'));
+                    e.target.classList.add('active');
+                    document.getElementById(targetId).classList.add('active');
+                }
+            });
+
+            const projects = [
+                { name: 'PitchPerfect', description: 'A platform blending startup pitching with professional networking.', tech: 'React, Node.js, MySQL', github: '#', demo: '#' },
+                { name: 'Divin Earth', description: 'Global Ecommerce Platform with Stripe and multi-currency support.', tech: 'Laravel, React, AWS', github: '#', demo: '#' },
+                { name: 'LittleFur', description: 'Full-stack pet adoption platform with role-based access and search.', tech: 'Laravel, REST APIs', github: '#', demo: '#' },
+                { name: 'Snake Game', description: 'A retro Snake Game built with Java Swing, featuring score tracking.', tech: 'Java, Swing', github: '#', demo: '#' },
+            ];
+            const projectsContainer = document.getElementById('projects-grid');
+            projectsContainer.innerHTML = projects.map(proj => `
+                <div class="card p-6 rounded-lg flex flex-col">
+                    <h3 class="text-xl font-bold text-[var(--primary-color)] mb-2">${proj.name}</h3>
+                    <p class="flex-grow mb-2">${proj.description}</p>
+                    <p class="text-sm text-[var(--primary-color)] font-mono mb-4 opacity-70">${proj.tech}</p>
+                    <div class="mt-auto flex space-x-4">
+                        <a href="${proj.github}" target="_blank" class="text-sm font-medium text-[var(--bg-color)] bg-[var(--primary-color)] hover:opacity-80 px-4 py-2 transition-colors">GitHub</a>
+                    </div>
+                </div>
+            `).join('');
+            
+            // --- Initial Setup ---
+            setupRain();
+
+            // --- Scroll Animations ---
+            ScrollReveal().reveal('.edu-entry', { interval: 200, duration: 800, origin: 'bottom', distance: '50px' });
+            ScrollReveal().reveal('#projects .card', { interval: 200, duration: 800, origin: 'bottom', distance: '50px', scale: 0.9 });
+        });
+    </script>
+</body>
+</html>
