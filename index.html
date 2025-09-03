@@ -123,9 +123,39 @@
             opacity: 0;
             transition: opacity 0.3s ease-in-out, transform 0.1s ease-out;
         }
+        /* Preloader Styles */
+        #preloader {
+            transition: opacity 0.5s ease-out;
+        }
+        #preloader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        #preloader-logo .char {
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+        #preloader-logo .char:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        #preloader-logo .underscore {
+            animation: blink 0.7s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
     </style>
 </head>
 <body class="theme-light">
+    <div id="preloader" class="fixed inset-0 z-[10000] flex items-center justify-center bg-[var(--bg-color)]">
+        <div class="text-6xl font-bold text-[var(--primary-color)] font-mono" id="preloader-logo">
+            <span class="char">P</span><span class="char">P</span><span class="underscore">_</span>
+        </div>
+    </div>
     <div id="glitch-overlay"></div>
     <canvas id="hacker-canvas" class="bg-canvas"></canvas>
     <div id="cursor-trail"></div>
@@ -244,6 +274,17 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const preloader = document.getElementById('preloader');
+
+            setTimeout(() => {
+                preloader.classList.add('hidden');
+                setTimeout(() => {
+                    if (preloader.parentElement) {
+                        preloader.parentElement.removeChild(preloader);
+                    }
+                }, 500); 
+            }, 2000);
+
             const body = document.body;
             const hackerModeToggle = document.getElementById('hacker-mode-toggle');
             const glitchOverlay = document.getElementById('glitch-overlay');
@@ -258,13 +299,11 @@
                     }).toDestination();
                 }
                 if (!typingSynth) {
-                    typingSynth = new Tone.MembraneSynth({
-                        pitchDecay: 0.02,
-                        octaves: 3,
-                        oscillator: { type: "square" },
-                        envelope: { attack: 0.001, decay: 0.15, sustain: 0, release: 0.01 }
+                    typingSynth = new Tone.NoiseSynth({
+                        noise: { type: 'white' },
+                        envelope: { attack: 0.001, decay: 0.02, sustain: 0, release: 0.02 }
                     }).toDestination();
-                    typingSynth.volume.value = -18;
+                    typingSynth.volume.value = -22;
                 }
             }
             function playDimensionSound() {
@@ -272,7 +311,7 @@
                 if (dimensionSynth) { dimensionSynth.triggerAttackRelease("8n"); }
             }
             function playTypingSound() {
-                if (typingSynth) { typingSynth.triggerAttackRelease("C3", "32n"); }
+                if (typingSynth) { typingSynth.triggerAttack(); }
             }
             document.body.addEventListener('click', () => {
                 if (Tone.context.state !== 'running') { Tone.start().then(setupAudio); }
@@ -482,7 +521,4 @@
     </script>
 </body>
 </html>
-
-
-
 
